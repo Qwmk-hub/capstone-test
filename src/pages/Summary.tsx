@@ -56,7 +56,7 @@ export default function Summary() {
       </div>
 
       {/* University info */}
-      <div className="summary-university-info">한양대학교 ERICA 소프트웨어융합대학</div>
+      <div className="summary-university-info">한양대학교 ERICA x 롯데이노베이트</div>
 
       {/* Header */}
       <Header activeMenu="summary" />

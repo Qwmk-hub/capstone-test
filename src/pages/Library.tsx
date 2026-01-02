@@ -4,6 +4,8 @@ import '../styles/library.css';
 import { useState } from 'react';
 import starIcon from '../assets/icons/star.png';
 import Recent from '../library/Recent';
+import Important from '../library/Important';
+import Trash from '../library/Trash';
 
 interface FileItem {
   id: number;
@@ -15,8 +17,8 @@ interface FileItem {
 export default function Library() {
   const [activeMenu, setActiveMenu] = useState('my-drive');
   const [files, setFiles] = useState<FileItem[]>([
-    { id: 1, name: '프로젝트 1', date: '2025-10-04', location: '내 드라이브' },
-    { id: 2, name: '프로젝트 2', date: '2025-10-10', location: '기본 폴더' },
+    { id: 1, name: 'Computer_vision.pdf', date: '2025-10-25', location: '기본 폴더' },
+    { id: 2, name: 'Machine_Learning_final.pdf', date: '2025-10-04', location: '기본 폴더' },
   ]);
 
   const folders = [
@@ -65,6 +67,10 @@ export default function Library() {
         <main className="library-main">
           {activeMenu === 'recent' ? (
             <Recent />
+          ) : activeMenu === 'important' ? (
+            <Important />
+          ) : activeMenu === 'trash' ? (
+            <Trash />
           ) : (
             <>
               {/* 검색바 */}
@@ -83,7 +89,7 @@ export default function Library() {
               {/* 파일 테이블 */}
               <div className="files-table">
                 <div className="table-header">
-                  <div className="column-header">이름</div>
+                  <div className="column-header">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;이름</div>
                   <div className="column-header">수정 날짜</div>
                   <div className="column-header">위치</div>
                 </div>

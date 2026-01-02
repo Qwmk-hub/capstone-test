@@ -25,9 +25,13 @@ export default function Recent() {
 				/>
 			</div>
 
+      <div className="trash-header">
+        <h1 className="library-title">최근 문서함</h1>
+      </div>
+
 			<div className="files-table">
 				<div className="table-header">
-					<div className="column-header">이름</div>
+					<div className="column-header">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;이름</div>
 					<div className="column-header">최근 수정</div>
 					<div className="column-header">위치</div>
 				</div>
