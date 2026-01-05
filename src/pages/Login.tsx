@@ -2,10 +2,12 @@ import Header from '../components/Header';
 import '../styles/design.css';
 import '../styles/login.css';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 export default function Login() {
   const [userId, setUserId] = useState('');
   const [password, setPassword] = useState('');
+  const navigate = useNavigate();
 
   const handleLogin = () => {
     // 로그인 로직
@@ -56,15 +58,15 @@ export default function Login() {
 
         {/* 하단 링크 */}
         <div className="login-footer-links">
-          <a href="/signup" className="login-link">
+          <span className="login-link" onClick={() => navigate('/login/signup')} style={{ cursor: 'pointer' }}>
             회원가입
-          </a>
-          <a href="/find-id" className="login-link">
+          </span>
+          <span className="login-link" onClick={() => navigate('/login/findid')} style={{ cursor: 'pointer' }}>
             아이디 찾기
-          </a>
-          <a href="/find-password" className="login-link">
+          </span>
+          <span className="login-link" onClick={() => navigate('/login/findpw')} style={{ cursor: 'pointer' }}>
             비밀번호 찾기
-          </a>
+          </span>
         </div>
       </div>
     </div>

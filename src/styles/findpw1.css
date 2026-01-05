@@ -1,0 +1,167 @@
+.findpw1-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width : 800px;
+  height: 800px;
+  top : 10%;
+  margin: 0 auto;
+  position: relative; 
+  background: linear-gradient(137deg, rgba(30, 58, 138, 0.05) 0%, rgba(139, 92, 246, 0.05) 100%);
+  padding: 40px 20px;
+}
+
+/* 헤더 */
+.findpw1-header {
+  text-align: center;
+  margin-bottom: 25px;
+}
+
+.findpw1-title {
+  font-size: 51.2px;
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #F8FAFC;
+  letter-spacing: 4px;
+  margin: 0;
+  margin-bottom: 20px;
+  line-height: 1.2;
+}
+
+.findpw1-underline {
+  width: 120px;
+  height: 4px;
+  margin: 0 auto;
+  background: linear-gradient(90deg, #F59E0B 0%, #8B5CF6 50%, #EC4899 100%);
+  border-radius: 2px;
+}
+
+/* 설명 텍스트 */
+.findpw1-description {
+  text-align: center;
+  font-size: 20px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 400;
+  color: #F59E0B;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  margin-bottom: 75px;
+  opacity: 0.9;
+}
+
+/* 폼 그룹 */
+.findpw1-form-group {
+  margin-bottom: 40px;
+}
+
+.findpw1-label {
+  display: block;
+  font-size: 20px;
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 700;
+  color: #F59E0B;
+  margin-bottom: 20px;
+  line-height: 1;
+}
+
+/* 입력 필드 */
+.findpw1-input {
+  width: 488px;
+  height: 56px;
+  padding: 0 15px;
+  background: #FFF7F7;
+  border: 1px solid #000;
+  font-size: 20px;
+  font-family: 'Open Sans', sans-serif;
+  color: #918080;
+  box-sizing: border-box;
+}
+
+.findpw1-input::placeholder {
+  color: #918080;
+  font-weight: 300;
+}
+
+.findpw1-input:focus {
+  outline: none;
+  border-color: #F59E0B;
+}
+
+/* 확인 버튼 */
+.findpw1-confirm-button {
+  width: 271px;
+  height: 62px;
+  margin: 80px auto 0;
+  display: block;
+  background: linear-gradient(167deg, #F59E0B 0%, #8B5CF6 100%);
+  border: none;
+  border-radius: 15px;
+  box-shadow: 0px 10px 20px rgba(245, 158, 11, 0.3);
+  font-size: 17.6px;
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 600;
+  color: #0F0F23;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.findpw1-confirm-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0px 15px 30px rgba(245, 158, 11, 0.4);
+}
+
+.findpw1-confirm-button:active {
+  transform: translateY(0);
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+  .findpw1-title {
+    font-size: 36px;
+  }
+
+  .findpw1-description {
+    font-size: 18px;
+  }
+
+  .findpw1-input {
+    max-width: 100%;
+  }
+
+  .findpw1-confirm-button {
+    width: 100%;
+    max-width: 271px;
+  }
+}
+
+@media (max-width: 480px) {
+  .findpw1-wrapper {
+    padding: 20px 15px;
+  }
+
+  .findpw1-title {
+    font-size: 28px;
+    letter-spacing: 2px;
+  }
+
+  .findpw1-description {
+    font-size: 16px;
+    letter-spacing: 2px;
+  }
+
+  .findpw1-label {
+    font-size: 16px;
+  }
+
+  .findpw1-input {
+    max-width: 100%;
+    font-size: 16px;
+  }
+
+  .findpw1-confirm-button {
+    width: 100%;
+  }
+}

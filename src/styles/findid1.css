@@ -1,0 +1,176 @@
+.findid1-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 800px;
+  height: 760px;
+  top : 10%;
+  margin: 0 auto;
+  position: relative;
+  background: linear-gradient(137deg, rgba(30, 58, 138, 0.05) 0%, rgba(139, 92, 246, 0.05) 100%);
+  padding: 40px 20px;
+}
+
+.findid1-container {
+  width: 500px;
+  height: 600px;
+  top : 5%;
+  position: relative;
+}
+
+/* 헤더 */
+.findid1-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.findid1-title {
+  font-size: 51.2px;
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #F8FAFC;
+  letter-spacing: 4px;
+  margin: 0;
+  margin-bottom: 20px;
+  line-height: 1.2;
+}
+
+.findid1-underline {
+  width: 120px;
+  height: 4px;
+  margin: 0 auto;
+  background: linear-gradient(90deg, #F59E0B 0%, #8B5CF6 50%, #EC4899 100%);
+  border-radius: 2px;
+}
+
+/* 결과 메시지 */
+.findid1-message {
+  font-size: 20px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  color: #F59E0B;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  margin: 5px 0 80px;
+  opacity: 0.9;
+  line-height: 1.4;
+  text-align: center;
+}
+
+/* 아이디 박스 */
+.findid1-id-box {
+  width: 100%;
+  height: 56px;
+  margin: 0 auto 80px;
+  background: #FFF7F7;
+  border: 1px solid #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+}
+
+.findid1-id-text {
+  font-size: 20px;
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 600;
+  color: #333;
+}
+
+/* 버튼 그룹 */
+.findid1-button-group {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  margin-top: 55px;
+}
+
+.findid1-button {
+  width: 271px;
+  height: 62px;
+  margin: 0 auto;
+  background: linear-gradient(167deg, #F59E0B 0%, #8B5CF6 100%);
+  border: none;
+  border-radius: 15px;
+  box-shadow: 0px 10px 20px rgba(245, 158, 11, 0.3);
+  font-size: 17.6px;
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 600;
+  color: #0F0F23;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.findid1-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0px 15px 30px rgba(245, 158, 11, 0.4);
+}
+
+.findid1-button:active {
+  transform: translateY(0);
+}
+
+.findid1-password-btn {
+  order: 1;
+}
+
+.findid1-login-btn {
+  order: 2;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+  .findid1-title {
+    font-size: 36px;
+  }
+
+  .findid1-message {
+    font-size: 40px;
+  }
+
+  .findid1-id-box {
+    max-width: 100%;
+  }
+
+  .findid1-button {
+    width: 100%;
+    max-width: 271px;
+  }
+}
+
+@media (max-width: 480px) {
+  .findid1-wrapper {
+    padding: 20px 15px;
+  }
+
+  .findid1-title {
+    font-size: 28px;
+    letter-spacing: 2px;
+  }
+
+  .findid1-message {
+    font-size: 30px;
+    letter-spacing: 1px;
+  }
+
+  .findid1-id-box {
+    max-width: 100%;
+    height: 48px;
+  }
+
+  .findid1-id-text {
+    font-size: 16px;
+  }
+
+  .findid1-button {
+    width: 100%;
+    height: 56px;
+    font-size: 14px;
+  }
+}

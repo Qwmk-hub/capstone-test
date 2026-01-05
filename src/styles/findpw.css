@@ -1,0 +1,282 @@
+.findpw-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 800px;
+  height:900px;
+  top : 10%;
+  margin: 0 auto;
+  position: relative;  
+  background: linear-gradient(137deg, rgba(30, 58, 138, 0.05) 0%, rgba(139, 92, 246, 0.05) 100%);
+  padding: 40px 20px;
+}
+
+/* 헤더 */
+.findpw-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.findpw-title {
+  font-size: 51.2px;
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #F8FAFC;
+  letter-spacing: 4px;
+  margin: 0;
+  margin-bottom: 20px;
+  line-height: 1.2;
+}
+
+.findpw-underline {
+  width: 120px;
+  height: 4px;
+  margin: 0 auto;
+  background: linear-gradient(90deg, #F59E0B 0%, #8B5CF6 50%, #EC4899 100%);
+  border-radius: 2px;
+}
+
+/* 설명 텍스트 */
+.findpw-description {
+  text-align: center;
+  font-size: 22.4px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 400;
+  color: #F59E0B;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  margin-bottom: 80px;
+  opacity: 0.9;
+}
+
+/* 폼 그룹 */
+.findpw-form-group {
+  margin-bottom: 40px;
+}
+
+.findpw-label {
+  display: block;
+  font-size: 20px;
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 700;
+  color: #F59E0B;
+  margin-bottom: 20px;
+  line-height: 1;
+}
+
+/* 아이디 입력 */
+.findpw-input {
+  width: 560px;
+  height: 56px;
+  padding: 0 15px;
+  background: #FFF7F7;
+  border: 1px solid #000;
+  font-size: 20px;
+  font-family: 'Open Sans', sans-serif;
+  color: #918080;
+  box-sizing: border-box;
+}
+
+.findpw-input::placeholder {
+  color: #918080;
+  font-weight: 300;
+}
+
+/* 이메일 입력 */
+.findpw-email-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.findpw-email-input {
+  flex: 0 0 231px;
+  height: 56px;
+  padding: 0 15px;
+  background: #FFF7F7;
+  border: 1px solid #000;
+  font-size: 20px;
+  font-family: 'Open Sans', sans-serif;
+  color: #918080;
+  box-sizing: border-box;
+}
+
+.findpw-email-input::placeholder {
+  color: #918080;
+  font-weight: 300;
+}
+
+.findpw-at-symbol {
+  font-size: 20px;
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 300;
+  color: #F59E0B;
+  min-width: 20px;
+  text-align: center;
+}
+
+.findpw-domain-select {
+  flex: 0 0 220px;
+  height: 56px;
+  padding: 0 15px;
+  background: #FFF7F7;
+  border: 1px solid #000;
+  font-size: 20px;
+  font-family: 'Open Sans', sans-serif;
+  color: #918080;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
+.findpw-domain-select option {
+  color: #918080;
+}
+
+/* 인증번호 입력 */
+.findpw-verify-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.findpw-verify-input {
+  flex: 1;
+  height: 56px;
+  padding: 0 15px;
+  background: #FFF7F7;
+  border: 1px solid #000;
+  font-size: 20px;
+  font-family: 'Open Sans', sans-serif;
+  color: #918080;
+  box-sizing: border-box;
+}
+
+.findpw-verify-input::placeholder {
+  color: #918080;
+  font-weight: 300;
+}
+
+.findpw-verify-button {
+  flex: 0 0 94px;
+  height: 45px;
+  background: rgba(245, 158, 11, 0.2);
+  border: 1px solid #F59E0B;
+  border-radius: 20px;
+  font-size: 13px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  color: #F59E0B;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.findpw-verify-button:hover {
+  background: rgba(245, 158, 11, 0.3);
+}
+
+/* 다음 버튼 */
+.findpw-next-button {
+  width: 271px;
+  height: 62px;
+  margin: 60px auto 0;
+  display: block;
+  background: linear-gradient(167deg, #F59E0B 0%, #8B5CF6 100%);
+  border: none;
+  border-radius: 15px;
+  box-shadow: 0px 10px 20px rgba(245, 158, 11, 0.3);
+  font-size: 17.6px;
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 600;
+  color: #0F0F23;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.findpw-next-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0px 15px 30px rgba(245, 158, 11, 0.4);
+}
+
+.findpw-next-button:active {
+  transform: translateY(0);
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+  .findpw-title {
+    font-size: 36px;
+  }
+
+  .findpw-description {
+    font-size: 18px;
+  }
+
+  .findpw-input {
+    max-width: 100%;
+  }
+
+  .findpw-email-container {
+    flex-wrap: wrap;
+  }
+
+  .findpw-email-input,
+  .findpw-domain-select {
+    flex: 1;
+    min-width: 120px;
+  }
+
+  .findpw-next-button {
+    width: 100%;
+    max-width: 271px;
+  }
+}
+
+@media (max-width: 480px) {
+  .findpw-wrapper {
+    padding: 20px 15px;
+  }
+
+  .findpw-title {
+    font-size: 28px;
+    letter-spacing: 2px;
+  }
+
+  .findpw-description {
+    font-size: 16px;
+    letter-spacing: 2px;
+  }
+
+  .findpw-label {
+    font-size: 16px;
+  }
+
+  .findpw-input {
+    max-width: 100%;
+  }
+
+  .findpw-email-container,
+  .findpw-verify-container {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .findpw-email-input,
+  .findpw-domain-select,
+  .findpw-verify-input {
+    width: 100%;
+    flex: none !important;
+  }
+
+  .findpw-verify-button {
+    width: 100%;
+  }
+
+  .findpw-next-button {
+    width: 100%;
+  }
+}
