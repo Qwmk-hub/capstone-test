@@ -23,11 +23,13 @@ export default function Center() {
   const [sidebarTop, setSidebarTop] = useState(70);
   const [panelTop, setPanelTop] = useState(70);
   const [activeTab, setActiveTab] = useState<'chat' | 'feedback' | 'reference'>('chat');
-  const [documentText, setDocumentText] = useState('');
   const [pages, setPages] = useState<string[]>(['']);
   const measureRef = useRef<HTMLDivElement | null>(null);
+  const pageRefs = useRef<(HTMLTextAreaElement | null)[]>([]);
+  const documentContainerRef = useRef<HTMLDivElement | null>(null);
   const [underlineStyle, setUnderlineStyle] = useState({ left: 60, width: 79 });
   const timeoutRef = useRef<number | null>(null);
+  const resizeRafRef = useRef<number | null>(null);
   const tabsContainerRef = useRef<HTMLDivElement | null>(null);
   const tabRefs = useRef<Record<'chat' | 'feedback' | 'reference', HTMLDivElement | null>>({
     chat: null,
@@ -35,22 +37,143 @@ export default function Center() {
     reference: null,
   });
 
+  // Constants
+  const pageHeight = 1123 - 71 * 4;
+  const contentWidth = 793 - 83 * 2;
+
+  // Helper: Check if text fits within one page
+  const fits = (text: string): boolean => {
+    const measure = measureRef.current;
+    if (!measure) return true;
+    measure.textContent = text;
+    return measure.scrollHeight <= pageHeight;
+  };
+
+  // Helper: Split text into [head, tail] where head is max prefix that fits
+  const splitToFit = (text: string): [string, string] => {
+    if (fits(text)) {
+      return [text, ''];
+    }
+    
+    let low = 0;
+    let high = text.length;
+    let fitIndex = 0;
+    
+    while (low <= high) {
+      const mid = Math.floor((low + high) / 2);
+      const candidate = text.slice(0, mid);
+      if (fits(candidate)) {
+        fitIndex = mid;
+        low = mid + 1;
+      } else {
+        high = mid - 1;
+      }
+    }
+    
+    return [text.slice(0, fitIndex), text.slice(fitIndex)];
+  };
+
+  // Helper: Reflow pages starting from pageIndex
+  const reflowFrom = (pageIndex: number, targetPageForFocus?: number, targetCaretPos?: number) => {
+    setPages(prevPages => {
+      const newPages = [...prevPages];
+      
+      // Ensure pageIndex is valid
+      if (pageIndex < 0 || pageIndex >= newPages.length) {
+        return prevPages;
+      }
+      
+      // Start reflowing from the edited page
+      let i = pageIndex;
+      while (i < newPages.length) {
+        const currentPage = newPages[i];
+        
+        // Check if current page overflows
+        if (!fits(currentPage)) {
+          const [head, tail] = splitToFit(currentPage);
+          newPages[i] = head;
+          
+          // Push overflow to next page
+          if (i + 1 < newPages.length) {
+            newPages[i + 1] = tail + newPages[i + 1];
+          } else {
+            newPages.push(tail);
+          }
+          i++;
+        } else {
+          // Current page fits, try to pull from next page
+          if (i + 1 < newPages.length) {
+            const combined = currentPage + newPages[i + 1];
+            const [head, tail] = splitToFit(combined);
+            
+            // Only pull if we can fit more
+            if (head.length > currentPage.length) {
+              newPages[i] = head;
+              newPages[i + 1] = tail;
+              
+              // If next page is now empty, remove it
+              if (newPages[i + 1] === '') {
+                newPages.splice(i + 1, 1);
+              } else {
+                i++;
+              }
+            } else {
+              // Can't pull more, move to next page
+              i++;
+            }
+          } else {
+            // Last page and it fits, done
+            break;
+          }
+        }
+      }
+      
+      // Remove trailing empty pages
+      while (newPages.length > 1 && newPages[newPages.length - 1] === '') {
+        newPages.pop();
+      }
+      
+      // Ensure at least one page
+      if (newPages.length === 0) {
+        newPages.push('');
+      }
+      
+      return newPages;
+    });
+
+    // Handle focus and caret positioning after state update
+    if (targetPageForFocus !== undefined && targetCaretPos !== undefined) {
+      setTimeout(() => {
+        const targetTextarea = pageRefs.current[targetPageForFocus];
+        if (targetTextarea) {
+          targetTextarea.focus();
+          targetTextarea.setSelectionRange(targetCaretPos, targetCaretPos);
+        }
+      }, 0);
+    }
+  };
+
+  // Font size handlers
   const handleIncrease = () => {
     setFontSize(prev => prev + 1);
   };
 
+  // Font size handlers
   const handleDecrease = () => {
     setFontSize(prev => Math.max(1, prev - 1));
   };
 
+  // Update sidebar and panel positions based on scroll
+  const updatePositions = () => {
+    const scrollTop = window.scrollY || document.documentElement.scrollTop;
+    const scrollThreshold = 75;
+    const targetTop = 70 + Math.max(0, scrollTop - scrollThreshold);
+    setSidebarTop(targetTop);
+    setPanelTop(targetTop);
+  };
+
+  // Scroll position handlers
   useEffect(() => {
-    const updatePositions = () => {
-      const scrollTop = window.scrollY || document.documentElement.scrollTop;
-      const scrollThreshold = 75;
-      const targetTop = 70 + Math.max(0, scrollTop - scrollThreshold);
-      setSidebarTop(targetTop);
-      setPanelTop(targetTop);
-    };
 
     const handleScroll = () => {
       if (timeoutRef.current !== null) {
@@ -73,6 +196,33 @@ export default function Center() {
     };
   }, []);
 
+  // ResizeObserver to track document height changes when pages are added/removed
+  useEffect(() => {
+    const container = documentContainerRef.current;
+    if (!container) return;
+
+    const resizeObserver = new ResizeObserver(() => {
+      // Use requestAnimationFrame to batch multiple callbacks
+      if (resizeRafRef.current !== null) {
+        cancelAnimationFrame(resizeRafRef.current);
+      }
+
+      resizeRafRef.current = requestAnimationFrame(() => {
+        updatePositions();
+      });
+    });
+
+    resizeObserver.observe(container);
+
+    return () => {
+      resizeObserver.disconnect();
+      if (resizeRafRef.current !== null) {
+        cancelAnimationFrame(resizeRafRef.current);
+      }
+    };
+  }, []);
+
+  // Helper Underline position handlers
   useEffect(() => {
     const recalcUnderline = () => {
       const container = tabsContainerRef.current;
@@ -93,48 +243,172 @@ export default function Center() {
     };
   }, [activeTab]);
 
+  // Update measureRef when fontSize changes
   useEffect(() => {
-    const pageHeight = 1123 - 71 - 71;
-    const contentWidth = 793 - 83 - 83;
     const measure = measureRef.current;
     if (!measure) return;
-    const text = documentText || '';
-    const font = `${fontSize}px Inter, system-ui, sans-serif`;
     measure.style.width = `${contentWidth}px`;
-    measure.style.font = font;
+    measure.style.fontSize = `${fontSize}px`;
+  }, [fontSize, contentWidth]);
 
-    const fits = (substr: string) => {
-      measure.textContent = substr;
-      return measure.scrollHeight <= pageHeight;
-    };
-
+  // Repaginate all pages when font size changes
+  useEffect(() => {
+    // Combine all pages into one text
+    const fullText = pages.join('');
+    
+    // Re-split from scratch
+    const measure = measureRef.current;
+    if (!measure) return;
+    
     const result: string[] = [];
     let start = 0;
-    while (start < text.length) {
+    
+    while (start < fullText.length) {
       let low = start + 1;
-      let high = text.length;
+      let high = fullText.length;
       let fitIndex = start + 1;
+      
       while (low <= high) {
         const mid = Math.floor((low + high) / 2);
-        const candidate = text.slice(start, mid);
-        if (fits(candidate)) {
+        const candidate = fullText.slice(start, mid);
+        measure.textContent = candidate;
+        if (measure.scrollHeight <= pageHeight) {
           fitIndex = mid;
           low = mid + 1;
         } else {
           high = mid - 1;
         }
       }
-      result.push(text.slice(start, fitIndex));
+      
+      result.push(fullText.slice(start, fitIndex));
       start = fitIndex;
     }
-
+    
     if (result.length === 0) {
       setPages(['']);
     } else {
       setPages(result);
     }
-  }, [documentText, fontSize]);
+  }, [fontSize]); // Only trigger on fontSize change
 
+  // Handle page text change
+  const handlePageChange = (pageIndex: number, newText: string, caretPos: number) => {
+    const prevText = pages[pageIndex];
+    const wasInsertion = newText.length > prevText.length;
+    const wasDeletion = newText.length < prevText.length;
+    
+    // Check if new text overflows
+    const overflows = !fits(newText);
+    
+    if (overflows && wasInsertion) {
+      // Split the text that fits vs overflow
+      const [head, tail] = splitToFit(newText);
+      
+      // Calculate where the caret should be
+      // If caret is beyond the head, it should move to next page
+      let targetPage = pageIndex;
+      let targetCaret = caretPos;
+      
+      if (caretPos > head.length) {
+        // Caret is in the overflow area, move to next page
+        targetPage = pageIndex + 1;
+        targetCaret = caretPos - head.length;
+      }
+      
+      // Update pages
+      setPages(prevPages => {
+        const newPages = [...prevPages];
+        newPages[pageIndex] = head;
+        
+        // Push tail to next page
+        if (pageIndex + 1 < newPages.length) {
+          newPages[pageIndex + 1] = tail + newPages[pageIndex + 1];
+        } else {
+          newPages.push(tail);
+        }
+        
+        return newPages;
+      });
+      
+      // Move caret to appropriate position
+      if (targetPage > pageIndex) {
+        // Focus next page with calculated caret position
+        setTimeout(() => {
+          const nextTextarea = pageRefs.current[targetPage];
+          if (nextTextarea) {
+            nextTextarea.focus();
+            nextTextarea.setSelectionRange(targetCaret, targetCaret);
+          }
+        }, 0);
+      } else {
+        // Stay on current page
+        reflowFrom(pageIndex + 1); // Reflow starting from next page
+      }
+    } else if (wasDeletion) {
+      // Update current page
+      setPages(prevPages => {
+        const newPages = [...prevPages];
+        newPages[pageIndex] = newText;
+        return newPages;
+      });
+      
+      // Pull from next page if there's space
+      setTimeout(() => {
+        setPages(prevPages => {
+          const newPages = [...prevPages];
+          
+          // Try to pull from next page
+          if (pageIndex + 1 < newPages.length && !fits(newPages[pageIndex] + newPages[pageIndex + 1])) {
+            const combined = newPages[pageIndex] + newPages[pageIndex + 1];
+            const [head, tail] = splitToFit(combined);
+            newPages[pageIndex] = head;
+            newPages[pageIndex + 1] = tail;
+            
+            // Remove empty pages
+            if (newPages[pageIndex + 1] === '') {
+              newPages.splice(pageIndex + 1, 1);
+            }
+          } else if (pageIndex + 1 < newPages.length) {
+            // Can fit everything, merge
+            const combined = newPages[pageIndex] + newPages[pageIndex + 1];
+            if (fits(combined)) {
+              newPages[pageIndex] = combined;
+              newPages.splice(pageIndex + 1, 1);
+            } else {
+              const [head, tail] = splitToFit(combined);
+              newPages[pageIndex] = head;
+              newPages[pageIndex + 1] = tail;
+              
+              if (newPages[pageIndex + 1] === '') {
+                newPages.splice(pageIndex + 1, 1);
+              }
+            }
+          }
+          
+          // Remove trailing empty pages
+          while (newPages.length > 1 && newPages[newPages.length - 1] === '') {
+            newPages.pop();
+          }
+          
+          // Ensure at least one page
+          if (newPages.length === 0) {
+            newPages.push('');
+          }
+          
+          return newPages;
+        });
+      }, 0);
+    } else {
+      // Normal update, no overflow
+      setPages(prevPages => {
+        const newPages = [...prevPages];
+        newPages[pageIndex] = newText;
+        return newPages;
+      });
+    }
+  };
+
+  // Panel content renderer
   const renderPanelContent = () => {
     if (activeTab === 'chat') {
       return <Chatbot />;
@@ -147,6 +421,7 @@ export default function Center() {
     return <Search />;
   };
 
+  // Render
   return (
     <div className="center-container">
       <div className="center-sidebar" style={{ top: `${sidebarTop}px` }}>
@@ -182,28 +457,28 @@ export default function Center() {
         <img src={settings} alt="sidebar icon" className="sidebar-icon-10" />
         <img src={save} alt="sidebar icon" className="sidebar-icon-9" />
       </div>
-
+      <div ref={documentContainerRef}>
       {pages.map((content, idx) => (
         <div
           key={idx}
           className="center-document"
           style={{ top: `${70 + idx * (1123 + 30)}px` }}
         >
-          {idx === 0 ? (
-            <textarea
-              className="document-input"
-              placeholder="문서를 입력하세요"
-              value={documentText}
-              onChange={(e) => setDocumentText(e.target.value)}
-              style={{ fontSize: `${fontSize}px` }}
-            />
-          ) : (
-            <div className="document-page-view" style={{ fontSize: `${fontSize}px` }}>
-              {content}
-            </div>
-          )}
+          <textarea
+            ref={el => (pageRefs.current[idx] = el)}
+            className="document-input"
+            placeholder={idx === 0 ? "문서를 입력하세요" : ""}
+            value={content}
+            onChange={(e) => {
+              const textarea = e.target;
+              const caretPos = textarea.selectionStart;
+              handlePageChange(idx, textarea.value, caretPos);
+            }}
+            style={{ fontSize: `${fontSize}px` }}
+          />
         </div>
       ))}
+      </div>
       <div
         ref={measureRef}
         style={{
