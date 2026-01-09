@@ -9,6 +9,7 @@ import searchIcon from '../assets/icons/search.png';
 export default function Summary() {
   const [searchQuery, setSearchQuery] = useState('');
   const [userNickname, setUserNickname] = useState<string>('사용자');
+  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -22,6 +23,21 @@ export default function Summary() {
       }
     }
   }, []);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setUploadedFile(file);
+    }
+  };
+
+  const handleFileRemove = () => {
+    setUploadedFile(null);
+    const fileInput = document.getElementById('summary-file-input') as HTMLInputElement;
+    if (fileInput) {
+      fileInput.value = '';
+    }
+  };
 
   const handleSearch = () => {
     navigate('/summary/center');
@@ -41,6 +57,13 @@ export default function Summary() {
       </div>
 
       <div className="summary-input-area">
+        {uploadedFile && (
+          <div className="uploaded-file-preview">
+            <div className="file-icon">PDF</div>
+            <span className="file-name">{uploadedFile.name}</span>
+            <button className="file-remove-btn" onClick={handleFileRemove}>×</button>
+          </div>
+        )}
         <div className="summary-input-shell">
           <input
             type="text"
@@ -49,7 +72,14 @@ export default function Summary() {
             aria-label="문서 링크 또는 제목을 입력하세요"
           />
           <div className="summary-upload-group">
-            <input type="file" id="summary-file-input" className="summary-file-input" aria-label="파일 업로드" />
+            <input 
+              type="file" 
+              id="summary-file-input" 
+              className="summary-file-input" 
+              aria-label="파일 업로드"
+              onChange={handleFileChange}
+              accept=".pdf,.doc,.docx,.txt"
+            />
             <label htmlFor="summary-file-input" className="summary-upload-hit">
               <img src={fileuploadIcon} alt="파일 업로드" className="summary-upload-icon" />
             </label>

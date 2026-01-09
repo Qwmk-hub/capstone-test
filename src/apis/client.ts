@@ -1,21 +1,20 @@
 import axios, { AxiosInstance, AxiosError } from 'axios';
 
-// FastAPI 서버 주소 - 환경에 맞게 수정하세요
-const BASE_URL = 'http://127.0.0.1:8000';
+// FastAPI Server URL
+const BACKEND_URL = 'http://127.0.0.1:8000';
+const AI_URL = 'http://127.0.0.1:7000';
 
-// Axios 인스턴스 생성
+// Axios Instacne
 const apiClient: AxiosInstance = axios.create({
-  baseURL: BASE_URL,
+  baseURL: BACKEND_URL,
   headers: {    
     'Content-Type': 'application/json',
   },
-  timeout: 10000, // 10초 타임아웃
+  timeout: 10000, 
 });
 
-// 요청 인터셉터 - 토큰 자동 추가
 apiClient.interceptors.request.use(
   (config) => {
-    // localStorage에서 액세스 토큰 가져오기
     const token = localStorage.getItem('access_token');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
@@ -27,19 +26,80 @@ apiClient.interceptors.request.use(
   }
 );
 
-// 응답 인터셉터 - 에러 처리
+let isRefreshing = false;
+let failedQueue: any[] = [];
+
+const processQueue = (error: any, token: string | null = null) => {
+  failedQueue.forEach(prom => {
+    if (error) {
+      prom.reject(error);
+    } else {
+      prom.resolve(token);
+    }
+  });
+  failedQueue = [];
+};
+
 apiClient.interceptors.response.use(
   (response) => {   
     return response;
   },
   async (error: AxiosError) => {
-    // 401 에러 처리 (토큰 만료)
-    if (error.response?.status === 401) {
-      // 토큰 제거 및 로그인 페이지로 리다이렉트 등의 처리
-      localStorage.removeItem('access_token');
-      localStorage.removeItem('refresh_token');
-      // window.location.href = '/login';
+    const originalRequest: any = error.config;
+
+    if (error.response?.status === 401 && !originalRequest._retry) {
+      if (isRefreshing) {
+        return new Promise((resolve, reject) => {
+          failedQueue.push({ resolve, reject });
+        }).then(token => {
+          originalRequest.headers['Authorization'] = 'Bearer ' + token;
+          return apiClient(originalRequest);
+        }).catch(err => {
+          return Promise.reject(err);
+        });
+      }
+
+      originalRequest._retry = true;
+      isRefreshing = true;
+
+      const refreshToken = localStorage.getItem('refresh_token');
+      
+      if (!refreshToken) {
+        // Refresh token이 없으면 로그아웃
+        localStorage.removeItem('access_token');
+        localStorage.removeItem('refresh_token');
+        localStorage.removeItem('user');
+        window.location.href = '/login';
+        return Promise.reject(error);
+      }
+
+      try {
+        // refresh token으로 새 access token 요청
+        const response = await axios.post(`${BACKEND_URL}/api/v1/auth/refresh`);
+        const newAccessToken = response.data.data.access_token;
+        
+        localStorage.setItem('access_token', newAccessToken);
+        apiClient.defaults.headers.common['Authorization'] = 'Bearer ' + newAccessToken;
+        originalRequest.headers['Authorization'] = 'Bearer ' + newAccessToken;
+        
+        processQueue(null, newAccessToken);
+        isRefreshing = false;
+        
+        return apiClient(originalRequest);
+      } catch (refreshError) {
+        // Refresh token도 만료되었으면 로그아웃
+        processQueue(refreshError, null);
+        isRefreshing = false;
+        
+        localStorage.removeItem('access_token');
+        localStorage.removeItem('refresh_token');
+        localStorage.removeItem('user');
+        window.location.href = '/login';
+        
+        return Promise.reject(refreshError);
+      }
     }
+    
     return Promise.reject(error);
   }
 );

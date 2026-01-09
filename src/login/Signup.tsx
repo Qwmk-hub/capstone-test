@@ -3,7 +3,7 @@ import '../styles/design.css';
 import '../styles/login.css';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { createUser } from '../apis';
+import { createUser, requestEmailVerification, verifyEmailCode } from '../apis';
 
 export default function Signup() {
   const [userId, setUserId] = useState('');
@@ -15,6 +15,9 @@ export default function Signup() {
   const [emailPrefix, setEmailPrefix] = useState('');
   const [emailDomain, setEmailDomain] = useState('');
   const [customDomain, setCustomDomain] = useState('');
+  const [verificationCode, setVerificationCode] = useState('');
+  const [isCodeSent, setIsCodeSent] = useState(false);
+  const [isCodeVerified, setIsCodeVerified] = useState(false);
   const [isIdChecked, setIsIdChecked] = useState(false);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -36,6 +39,54 @@ export default function Signup() {
     }
     setIsIdChecked(true);
     alert('사용 가능한 아이디입니다.');
+  };
+
+  // 인증번호 요청
+  const handleRequestCode = async () => {
+    if (!isIdChecked) {
+      alert('아이디 중복확인을 먼저 해주세요.');
+      return;
+    }
+    if (!userId) {
+      alert('아이디를 먼저 입력해주세요.');
+      return;
+    }
+    if (!emailPrefix || !emailDomain) {
+      alert('이메일을 입력해주세요.');
+      return;
+    }
+    if (emailDomain === 'custom' && !customDomain) {
+      alert('도메인을 입력해주세요.');
+      return;
+    }
+    
+    try {
+      const email = getFullEmail();
+      await requestEmailVerification(userId, email);
+      setIsCodeSent(true);
+      alert('인증번호가 발송되었습니다.');
+    } catch (error: any) {
+      console.error('인증번호 요청 실패:', error);
+      alert(error.response?.data?.detail || '인증번호 요청에 실패했습니다.');
+    }
+  };
+
+  // 인증번호 확인
+  const handleVerifyCode = async () => {
+    if (!verificationCode) {
+      alert('인증번호를 입력해주세요.');
+      return;
+    }
+    
+    try {
+      const email = getFullEmail();
+      await verifyEmailCode(email, verificationCode);
+      setIsCodeVerified(true);
+      alert('인증이 완료되었습니다.');
+    } catch (error: any) {
+      console.error('인증번호 확인 실패:', error);
+      alert(error.response?.data?.detail || '인증번호가 올바르지 않습니다.');
+    }
   };
 
   // 회원가입
@@ -112,9 +163,10 @@ export default function Signup() {
                 placeholder="아이디 입력(6~20자)"
                 value={userId}
                 onChange={(e) => setUserId(e.target.value)}
+                disabled={isIdChecked}
               />
-              <button className="duplicate-check-btn" onClick={handleIdCheck}>
-                중복확인
+              <button className="duplicate-check-btn" onClick={handleIdCheck} disabled={isIdChecked}>
+                {isIdChecked ? '확인완료' : '중복확인'}
               </button>
             </div>
           </div>
@@ -209,7 +261,37 @@ export default function Signup() {
                 style={{ marginTop: '10px' }}
               />
             )}
+            <button 
+              className="verification-request-btn" 
+              onClick={handleRequestCode}
+              type="button"
+            >
+              인증번호 요청
+            </button>
           </div>
+
+          {isCodeSent && (
+            <div className="form-group">
+              <label className="form-label">인증번호</label>
+              <div className="input-with-button">
+                <input
+                  type="text"
+                  className="form-input"
+                  placeholder="인증번호 6자리 입력"
+                  value={verificationCode}
+                  onChange={(e) => setVerificationCode(e.target.value)}
+                  maxLength={6}
+                />
+                <button 
+                  className="duplicate-check-btn" 
+                  onClick={handleVerifyCode}
+                  type="button"
+                >
+                  확인
+                </button>
+              </div>
+            </div>
+          )}
         </div>
 
         <button 
