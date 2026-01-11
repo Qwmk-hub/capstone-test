@@ -1,0 +1,160 @@
+/* Mypage layout */
+.mypage-layout {
+  display: flex;
+  gap: 24px;
+  padding: 24px;
+}
+
+/* Left panel */
+.mypage-left-panel {
+  width: 492px;
+  height: 900px;
+  left: calc(50% - 470px);
+  top: 50px;
+  transform: translateX(-50%);
+  background: rgba(139, 92, 246, 0.05);
+  border-radius: 12px;
+  border: 2px solid rgba(139, 92, 246, 0.30);
+  padding: 24px;
+  display: flex;
+  position: absolute;
+  flex-direction: column;
+  align-items: center;
+}
+
+.mypage-avatar {
+  position: relative;
+  width: 350px;
+  height: 350px;
+  background: #D9D9D9;
+  border-radius: 50%;
+  margin-top: 24px;
+  margin-bottom: 24px;
+  aspect-ratio: 1 / 1;
+  flex-shrink: 0;
+}
+
+.mypage-avatar-camera {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 50px;
+  height: 50px;
+  background: #D9D9D9;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.mypage-avatar-camera img {
+  width: 100px;
+  height: 100px;
+}
+
+.mypage-nickname {
+  color: #E2E8F0;
+  font-size: 36px;
+  font-family: Rajdhani, sans-serif;
+  font-weight: 500;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+
+.mypage-label {
+  color: rgba(226, 232, 240, 0.70);
+  font-size: 24px;
+  font-family: Rajdhani, sans-serif;
+  font-weight: 500;
+  text-transform: uppercase;
+  margin-top: 8px;
+}
+
+.mypage-subtext {
+  color: rgba(226, 232, 240, 0.70);
+  font-size: 18px;
+  font-family: Inter, sans-serif;
+  margin-bottom: 8px;
+}
+
+.mypage-action-btn {
+  width: 220px;
+  height: 40px;
+  margin-top: 16px;
+  background: rgba(190, 124, 133, 0.20);
+  border-radius: 20px;
+  border: 1px solid #BE7C85;
+  color: #BE7C85;
+  font-size: 16px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.mypage-withdraw {
+  margin-top: 24px;
+  color: #E2E8F0;
+  font-size: 18px;
+  font-family: Space Grotesk, sans-serif;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+/* Right panel */
+.mypage-right-panel {
+  left : calc(50% - 200px);
+  top: 50px;
+  width : 900px;
+  height : 900px;
+  flex: 1;
+  background: rgba(139, 92, 246, 0.05);
+  border-radius: 12px;
+  outline: 2px solid rgba(139, 92, 246, 0.30);
+  outline-offset: -2px;
+  position: absolute;
+  padding: 32px;
+}
+
+.folder-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(300px, 1fr));
+  gap: 32px;
+}
+
+.folder-card {
+  height: 100px;
+  background: rgba(139, 92, 246, 0.05);
+  border-radius: 20px;
+  outline: 2px solid rgba(139, 92, 246, 0.30);
+  outline-offset: -2px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+}
+
+.folder-icon {
+  width: 41px;
+  height: 40px;
+  border: 2.5px solid #F3F3F3;
+  border-radius: 6px;
+  margin-right: 24px;
+}
+
+.folder-title {
+  color: #ffffff;
+  font-size: 28px;
+  font-family: Inter, sans-serif;
+  font-weight: 400;
+}
+
+.folder-action {
+  position: absolute;
+  right: 24px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 38px;
+  height: 34px;
+  border-left: 2.5px solid #ffffff;
+}

@@ -3,7 +3,7 @@ import '../styles/design.css';
 import '../styles/login.css';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { createUser, requestEmailVerification, verifyEmailCode } from '../apis';
+import { createUser, requestEmailVerification, verifyEmailCode, checkUserIdAvailability } from '../apis';
 
 export default function Signup() {
   const [userId, setUserId] = useState('');
@@ -28,7 +28,7 @@ export default function Signup() {
   };
 
   // 아이디 중복확인 (백엔드 엔드포인트 필요)
-  const handleIdCheck = () => {
+  const handleIdCheck = async () => {
     if (!userId) {
       alert('아이디를 입력해주세요.');
       return;
@@ -37,8 +37,24 @@ export default function Signup() {
       alert('아이디는 6~20자로 입력해주세요.');
       return;
     }
-    setIsIdChecked(true);
-    alert('사용 가능한 아이디입니다.');
+    try {
+      const res = await checkUserIdAvailability(userId);
+      const message: string = res.message;
+      if (message && message.includes('새로운 ID')) {
+        setIsIdChecked(true);
+        alert('사용 가능한 아이디입니다.');
+      } else {
+        alert(message || '이미 사용 중인 아이디입니다.');
+      }
+    } catch (error: any) {
+      console.error('아이디 중복 확인 실패:', error);
+      const errorMessage = error.response?.data?.detail 
+        ? (typeof error.response.data.detail === 'string' 
+          ? error.response.data.detail 
+          : JSON.stringify(error.response.data.detail))
+        : error.message || '아이디 중복 확인에 실패했습니다.';
+      alert(errorMessage);
+    }
   };
 
   // 인증번호 요청
@@ -98,6 +114,12 @@ export default function Signup() {
 
     if (!isIdChecked) {
       alert('아이디 중복확인을 해주세요.');
+      return;
+    }
+
+    // 이메일 인증 미완료 시 회원가입 차단
+    if (!isCodeVerified) {
+      alert('이메일 인증을 완료해주세요.');
       return;
     }
 
@@ -297,7 +319,7 @@ export default function Signup() {
         <button 
           className="signup-submit-btn" 
           onClick={handleSignup}
-          disabled={loading}
+          disabled={loading || !isCodeVerified}
         >
           {loading ? '처리 중...' : '확인'}
         </button>

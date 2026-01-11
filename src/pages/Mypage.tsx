@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
+import cameraIcon from '../assets/icons/camera.png';
 import '../styles/design.css';
+import '../styles/mypage.css';
 
 export default function Mypage() {
   const [userInfo, setUserInfo] = useState<any>(null);
@@ -36,6 +38,45 @@ export default function Mypage() {
   return (
     <div className="home-container">
       <Header activeMenu="mypage" />
+      <div className="mypage-left-panel">
+        <div className="mypage-avatar">
+          <div className="mypage-avatar-camera">
+            <img src={cameraIcon} alt="camera" />
+          </div>
+        </div>
+        <div className="mypage-nickname">{userInfo?.nickname || '닉네임'}</div>
+        <div className="mypage-label">이름</div>
+        <div className="mypage-subtext">{userInfo?.first_name && userInfo?.last_name ? `${userInfo.first_name} ${userInfo.last_name}` : '이름 정보 없음'}</div>
+        <div className="mypage-label">아이디</div>
+        <div className="mypage-subtext">{userInfo?.user_id || '아이디 정보 없음'}</div>
+        <div className="mypage-label">이메일</div>
+        <div className="mypage-subtext">{userInfo?.email || '이메일 정보 없음'}</div>
+
+        <button className="mypage-action-btn" onClick={() => alert('개인정보 수정은 추후 연결 예정입니다.')}>개인정보 수정하기</button>
+        <button className="mypage-action-btn" onClick={handleLogout}>로그아웃</button>
+
+        <div className="mypage-withdraw">회원탈퇴</div>
+      </div>
+
+      <div className="mypage-right-panel">
+        <div className="folder-grid">
+          <div className="folder-card">
+            <div className="folder-icon" />
+            <div className="folder-title">기본 폴더</div>
+            <div className="folder-action" />
+          </div>
+          <div className="folder-card">
+            <div className="folder-icon" />
+            <div className="folder-title">폴더 이름</div>
+            <div className="folder-action" />
+          </div>
+          <div className="folder-card">
+            <div className="folder-icon" />
+            <div className="folder-title">폴더 이름</div>
+            <div className="folder-action" />
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

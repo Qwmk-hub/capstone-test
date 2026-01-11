@@ -3,6 +3,12 @@ import {
   LoginRequest,
   LoginResponse,
   RefreshTokenResponse,
+  CheckUserIdRequest,
+  CheckUserIdResponse,
+  RequestEmailVerificationRequest,
+  RequestEmailVerificationResponse,
+  VerifyEmailCodeRequest,
+  VerifyEmailCodeResponse,
 } from './types';
 
 
@@ -13,7 +19,7 @@ export const login = async (data: LoginRequest): Promise<LoginResponse> => {
   formData.append('username', data.username);
   formData.append('password', data.password);
   
-  const response = await apiClient.post<LoginResponse>('/api/v1/auth/login', formData, {
+  const response = await apiClient.post('/api/v1/auth/login', formData, {
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
     },
@@ -73,18 +79,37 @@ export const refreshToken = async (): Promise<string> => {
 };
 
 // Request Email Verification
-export const requestEmailVerification = async (userId: string, email: string): Promise<void> => {
-  await apiClient.post('/api/v1/auth/email', {
+export const requestEmailVerification = async (
+  userId: string,
+  email: string
+): Promise<RequestEmailVerificationResponse | void> => {
+  const payload: RequestEmailVerificationRequest = {
     type: false,
     user_id: userId,
-    email: email
-  });
+    email: email,
+  };
+  const response = await apiClient.post<RequestEmailVerificationResponse>('/api/v1/auth/email', payload);
+  return response.data;
 };
 
 // Verify Email Code
-export const verifyEmailCode = async (email: string, code: string): Promise<void> => {
-  await apiClient.post('/api/v1/auth/email/verify', {
+export const verifyEmailCode = async (
+  email: string,
+  code: string
+): Promise<VerifyEmailCodeResponse | void> => {
+  const payload: VerifyEmailCodeRequest = {
     code: parseInt(code),
-    email: email
-  });
+    email: email,
+  };
+  const response = await apiClient.post<VerifyEmailCodeResponse>('/api/v1/auth/email/verify', payload);
+  return response.data;
+};
+
+// Check User Id Availability
+export const checkUserIdAvailability = async (
+  userId: string
+): Promise<CheckUserIdResponse> => {
+  const payload: CheckUserIdRequest = { user_id: userId };
+  const response = await apiClient.post<CheckUserIdResponse>('/api/v1/auth/checking_user_id', payload);
+  return response.data;
 };

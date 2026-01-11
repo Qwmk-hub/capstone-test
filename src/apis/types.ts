@@ -45,3 +45,34 @@ export interface ApiResponse<T = any> {
   message?: string;
   error?: string;
 }
+
+// Check User Id (중복 확인)
+export interface CheckUserIdRequest {
+  user_id: string;
+}
+
+export interface CheckUserIdResponse {
+  message: string; // 예: "새로운 ID 입니다."
+}
+
+// Email Verification
+export interface RequestEmailVerificationRequest {
+  type: boolean;
+  user_id: string;
+  email: string;
+}
+
+export interface RequestEmailVerificationResponse {
+  message?: string;
+  success?: boolean;
+}
+
+export interface VerifyEmailCodeRequest {
+  code: number;
+  email: string;
+}
+
+export interface VerifyEmailCodeResponse {
+  message?: string;
+  success?: boolean;
+}
