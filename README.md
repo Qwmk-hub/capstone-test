@@ -1,5 +1,11 @@
 # Capstone
 
+## 사용 스택
+- **Frontend**: React + TypeScript
+- **Rich Text Editor**: Quill
+- **Styling**: CSS, HTML
+- **Build Tool**: Vite
+
 ## 실행 방법
 - 의존성 설치 후 개발 서버를 실행합니다.
 

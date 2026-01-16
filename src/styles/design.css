@@ -481,11 +481,12 @@ html, body {
   top: 70px;
   position: absolute;
   background: rgba(139, 92, 246, 0.05);
-  overflow: hidden;
+  overflow: visible;
   border-radius: 12px;
   outline: 2px rgba(139, 92, 246, 0.30) solid;
   outline-offset: -2px;
   display: flex;
+  z-index: 1000;
   flex-direction: column;
   align-items: center;
   padding-top: 30px;
@@ -509,7 +510,7 @@ html, body {
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-top: 10px;
+  margin-top: 0px;
 }
 
 .sidebar-icon-2{
@@ -588,7 +589,7 @@ html, body {
   height: 40px;
   position: absolute;
   left: calc(50% - 17.5px);
-  top: 360px;
+  top: 330px;
   background: none;
   cursor: pointer;
   transition: transform 0.2s;
@@ -599,7 +600,7 @@ html, body {
   height: 40px;
   position: absolute;
   left: calc(50% - 17.5px);
-  top: 440px;
+  top: 280px;
   background: none;
   cursor: pointer;
   transition: transform 0.2s;
@@ -692,8 +693,6 @@ html, body {
   position: absolute;
   background: #FFFFFF;
   border-radius: 12px;
-  outline: 2px #000000 solid;
-  outline-offset: -2px;
   padding: 71px 83px;
   box-sizing: border-box;
   animation: sidebarRiseUp 0.7s ease-out forwards;
@@ -737,16 +736,35 @@ html, body {
 }
 
 .document-input .ql-container {
-  border: none;
+  border: none !important;
   font-family: 'Inter', system-ui, sans-serif;
   line-height: 1.5;
   height: 100%;
+}
+
+.document-input .ql-toolbar {
+  border: none !important;
+  background: transparent !important;
+}
+
+.document-input .ql-toolbar.ql-snow {
+  border: none !important;
+}
+
+.document-input .ql-container.ql-snow {
+  border: none !important;
+}
+
+.document-input {
+  border: none !important;
+  outline: none !important;
 }
 
 .document-input .ql-editor {
   padding: 0;
   color: #0D0101;
   overflow: visible;
+  border: none;
 }
 
 .document-input .ql-editor.ql-blank::before {
@@ -950,4 +968,245 @@ html, body {
   text-transform: uppercase;
   letter-spacing: 6px;
   line-height: 1;
+}
+
+/* ------ Sidebar Font/Size Selectors ------ */
+.sidebar-selector-container {
+  position: relative;
+  margin-top: 5px;
+  margin-bottom: 12px;
+  width: 90%;
+  display: flex;
+  justify-content: center;
+}
+
+.sidebar-selector-button {
+  padding: 6px 10px;
+  border: 1px solid #404050;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  color: #fff;
+  font-family: Inter, system-ui, sans-serif;
+  width: 70px;
+  text-align: center;
+}
+
+.sidebar-selector-button:hover {
+  background: #353540;
+}
+
+.sidebar-selector-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background: #1e1e2e;
+  border: 1px solid #404050;
+  border-radius: 4px;
+  min-width: 80px;
+  z-index: 1000;
+  margin-top: 4px;
+}
+
+.sidebar-selector-item {
+  padding: 8px 12px;
+  cursor: pointer;
+  border-bottom: 1px solid #2d2d3d;
+  font-size: 12px;
+  color: #fff;
+  font-family: Inter, system-ui, sans-serif;
+  transition: background 0.2s;
+}
+
+.sidebar-selector-item:hover {
+  background: #2d2d3d;
+}
+
+.sidebar-selector-item.selected {
+  background: #404050;
+}
+
+.sidebar-selector-item:last-child {
+  border-bottom: none;
+}
+
+/* ------ Margin Settings Modal ------ */
+.margin-settings-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10000;
+}
+
+.margin-settings-modal {
+  background: #1e1e2e;
+  border: 1px solid #404050;
+  border-radius: 12px;
+  padding: 30px;
+  width: 400px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.margin-settings-modal h3 {
+  color: #fff;
+  font-family: Inter, system-ui, sans-serif;
+  font-size: 20px;
+  margin: 0 0 20px 0;
+  text-align: center;
+}
+
+.margin-inputs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.margin-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.margin-input-group label {
+  color: #bbb;
+  font-family: Inter, system-ui, sans-serif;
+  font-size: 13px;
+}
+
+.margin-input-group input {
+  background: #2d2d3d;
+  border: 1px solid #404050;
+  border-radius: 4px;
+  color: #fff;
+  font-family: Inter, system-ui, sans-serif;
+  font-size: 14px;
+  padding: 8px 12px;
+  outline: none;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.margin-input-group input:focus {
+  border-color: #8B5CF6;
+}
+
+.margin-input-group span {
+  color: #bbb;
+  font-family: Inter, system-ui, sans-serif;
+  font-size: 12px;
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.margin-input-group {
+  position: relative;
+}
+
+.margin-buttons {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+}
+
+.margin-apply-btn,
+.margin-cancel-btn {
+  padding: 10px 24px;
+  border: none;
+  border-radius: 6px;
+  font-family: Inter, system-ui, sans-serif;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.margin-apply-btn {
+  background: linear-gradient(135deg, #8B5CF6 0%, #EC4899 100%);
+  color: #fff;
+}
+
+.margin-apply-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);
+}
+
+.margin-cancel-btn {
+  background: #2d2d3d;
+  color: #fff;
+  border: 1px solid #404050;
+}
+
+.margin-cancel-btn:hover {
+  background: #353540;
+}
+
+/* ------ Color Picker ------ */
+.color-picker-anchor {
+  position: absolute;
+}
+
+.color-picker-dropdown {
+  position: absolute;
+  bottom: -290px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #1e1e2e;
+  border: 1px solid #404050;
+  border-radius: 8px;
+  padding: 12px;
+  z-index: 1000;
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 6px;
+}
+
+.color-swatch {
+  width: 20px;
+  height: 20px;
+  border-radius: 3px;
+  cursor: pointer;
+  border: 1px solid #666;
+}
+
+/* ------ Line Spacing Picker ------ */
+.line-spacing-container {
+  position: relative;
+}
+
+.line-spacing-dropdown {
+  position: absolute;
+  top: 320px;
+  left: calc(50% - 40px);
+  background: #1e1e2e;
+  border: 1px solid #404050;
+  border-radius: 4px;
+  min-width: 80px;
+  z-index: 10000;
+}
+
+.line-spacing-item {
+  padding: 8px 12px;
+  cursor: pointer;
+  border-bottom: 1px solid #2d2d3d;
+  font-size: 12px;
+  color: #fff;
+  font-family: Inter, system-ui, sans-serif;
+  background: transparent;
+  transition: background 0.2s;
+}
+
+.line-spacing-item:hover {
+  background: #2d2d3d;
+}
+
+.line-spacing-item:last-child {
+  border-bottom: none;
 }
