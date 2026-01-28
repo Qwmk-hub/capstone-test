@@ -6,7 +6,7 @@ export default defineConfig({
   base: '/capstone-test/',
   server: { port: 5173 },
   build: {
-    outDir: 'docs',
+    outDir: 'roots',
     emptyOutDir: true,
   },
 })
