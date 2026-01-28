@@ -3,7 +3,7 @@ import react from '@vitejs/plugin-react';
 
 export default defineConfig({
   plugins: [react()],
-  base: '/capstone-test/',
+  base: '/',
   server: { port: 5173 },
   build: {
     outDir: 'docs',
